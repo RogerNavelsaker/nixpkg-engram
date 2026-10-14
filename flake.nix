@@ -1,5 +1,5 @@
 {
-  description = "Engram: Persistent memory for AI coding agents";
+  description = "Engram CLI and Cloud server Nix packages";
 
   nixConfig = {
     extra-substituters = [
@@ -16,7 +16,6 @@
     ];
   };
 
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
@@ -26,7 +25,6 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-
         version = "2.2.1";
 
         osMap = {
@@ -45,30 +43,24 @@
 
         target = osMap.${system} or (throw "Unsupported system: ${system}");
         sha256 = hashMap.${system} or (throw "Unsupported system: ${system}");
-
         url = "https://github.com/Gentleman-Programming/engram/releases/download/v${version}/engram_${version}_${target}.tar.gz";
-      in
-      {
-        packages.default = pkgs.stdenv.mkDerivation {
+        cli = pkgs.stdenv.mkDerivation {
           pname = "engram";
           inherit version;
 
-          src = pkgs.fetchurl {
-            inherit url sha256;
-          };
-
+          src = pkgs.fetchurl { inherit url sha256; };
           sourceRoot = ".";
 
           installPhase = ''
             runHook preInstall
-            mkdir -p $out/bin
-            cp engram $out/bin/
-            chmod +x $out/bin/engram
+            mkdir -p "$out/bin"
+            cp engram "$out/bin/"
+            chmod +x "$out/bin/engram"
             runHook postInstall
           '';
 
           meta = with pkgs.lib; {
-            description = "Engram: Persistent memory for AI coding agents";
+            description = "Engram CLI: Persistent memory for AI coding agents";
             homepage = "https://github.com/Gentleman-Programming/engram";
             license = licenses.mit;
             mainProgram = "engram";
@@ -76,6 +68,18 @@
             platforms = platforms.linux ++ platforms.darwin;
           };
         };
-      }
-    );
+
+        cloudOutputs =
+          if pkgs.stdenv.hostPlatform.isLinux then
+            import ./nix/engram-cloud.nix { inherit pkgs self; }
+          else
+            { packages = { }; images = { }; };
+      in {
+        packages = {
+          default = cli;
+          engram = cli;
+        } // cloudOutputs.packages // cloudOutputs.images;
+
+        checks = cloudOutputs.packages // cloudOutputs.images;
+      });
 }
