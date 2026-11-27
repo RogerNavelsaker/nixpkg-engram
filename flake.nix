@@ -25,7 +25,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        version = "2.2.1";
+        version = "3.7.2";
 
         osMap = {
           "x86_64-linux" = "linux_amd64";
@@ -35,10 +35,10 @@
         };
 
         hashMap = {
-          "x86_64-linux" = "5094bbe764f4c775bb17ce7ac53931323ca184a1f57e88d458aaa4c4d6e6a85a";
-          "aarch64-linux" = "a23952a114f3f6cfb4e9714d84f1f489b627694d18890e2cf9ce17b81df4d6e1";
-          "x86_64-darwin" = "a1a56d68d6179aa055aadbe35bfbaa34639e97ad99dcc95ec894b0248b0f4111";
-          "aarch64-darwin" = "1e4cf5b67fd79ca07535eb01ea3a03ba942862c209dfe47e6cee86ec0cbeadaf";
+          "x86_64-linux" = "8db9d5db1c1574b8b830aac4ffbe86c024014aed6b9a3f0406ac3361a152cdf0";
+          "aarch64-linux" = "cdbbcb68d3e842d3e52e27edccef55e6fe98ce3cdbc90cd79894323b029efb50";
+          "x86_64-darwin" = "d35623443a5d85e8f78338cda5d0bb73b2f7ec6217a57e4abb71904a3e0d6287";
+          "aarch64-darwin" = "f96e08db8f47ca49ebc034eba30e468db81eb56df98f9bf21a73366b510695e4";
         };
 
         target = osMap.${system} or (throw "Unsupported system: ${system}");
