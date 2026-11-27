@@ -1,0 +1,10 @@
+{
+  "kind": "github-release",
+  "upstream": "Gentleman-Programming/engram",
+  "tag_prefix": "v",
+  "version_file": "flake.nix",
+  "version_grep": "version = \"[^\"]+\"",
+  "pinned_paths": [],
+  "pinned_flake_regex": "hashMap|\"[0-9a-f]{64}\"",
+  "sync_script": "bash scripts/sync-release.sh"
+}
